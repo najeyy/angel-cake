@@ -375,6 +375,15 @@
                         </div>
                         <i class="fas fa-chevron-down text-xs text-muted"></i>
                     </button>
+
+                    <button onclick="toggleSection('bespoke')"
+                            class="w-full nav-item flex items-center justify-between py-3 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-gem w-5 text-center"></i>
+                            <span>Bespoke Section</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs text-muted"></i>
+                    </button>
                 </nav>
                 
                 <!-- Logout -->
@@ -428,7 +437,7 @@
                 @endif
                 
                 <!-- Stats Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
                     <!-- Total Products -->
                     <div class="elegant-card rounded-xl p-6">
                         <div class="flex items-center justify-between">
@@ -470,6 +479,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Bespoke Sections -->
+                    <div class="elegant-card rounded-xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted text-sm mb-2">Bespoke</p>
+                                <p class="text-3xl font-bold elegant-font gradient-text">{{ $bespokeSections->count() }}</p>
+                                <p class="text-xs text-muted mt-1">Custom sections</p>
+                            </div>
+                            <div class="w-14 h-14 bg-gradient-to-br from-amber-600/10 to-transparent border border-amber-600/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-gem text-amber-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Products Section -->
@@ -498,8 +521,9 @@
                                 </button>
                             </div>
                             
-                            <form id="product-form" method="POST" enctype="multipart/form-data">
+                            <form id="product-form" method="POST" enctype="multipart/form-data" action="{{ route('admin.products.store') }}">
                                 @csrf
+                                <input type="hidden" name="_method" id="product_form_method" value="POST">
                                 <input type="hidden" name="product_id" id="product_id">
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -511,7 +535,7 @@
                                     
                                     <div>
                                         <label class="block text-sm font-medium text-muted mb-3">Price (Rp)</label>
-                                        <input type="number" name="price" id="product_price" required
+                                        <input type="number" name="price" id="product_price" required min="0"
                                                class="w-full input-elegant rounded-lg px-4 py-3">
                                     </div>
                                     
@@ -686,8 +710,9 @@
                                 </button>
                             </div>
                             
-                            <form id="review-form" method="POST">
+                            <form id="review-form" method="POST" action="{{ route('admin.reviews.store') }}">
                                 @csrf
+                                <input type="hidden" name="_method" id="review_form_method" value="POST">
                                 <input type="hidden" name="review_id" id="review_id">
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -800,6 +825,200 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Bespoke Section -->
+                <div id="bespoke-section" class="hidden">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 class="text-2xl font-bold elegant-font mb-2">Bespoke Section</h2>
+                            <p class="text-muted">Customize the Bespoke Creations section on homepage</p>
+                        </div>
+                        <button onclick="showBespokeForm()"
+                                class="btn-premium px-5 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            <span>New Bespoke</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Add/Edit Form -->
+                    <div id="bespoke-form-container" class="hidden mb-8 animate-fade-in">
+                        <div class="elegant-card rounded-xl p-8">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-xl font-bold elegant-font" id="bespoke-form-title">Add New Bespoke</h3>
+                                <button onclick="hideBespokeForm()"
+                                        class="text-muted hover:text-white transition-colors">
+                                    <i class="fas fa-times text-lg"></i>
+                                </button>
+                            </div>
+                            
+                            <form id="bespoke-form" method="POST" enctype="multipart/form-data" action="{{ route('admin.bespoke-sections.store') }}">
+                                @csrf
+                                <input type="hidden" name="_method" id="bespoke_form_method" value="POST">
+                                <input type="hidden" name="bespoke_id" id="bespoke_id">
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-muted mb-3">Title</label>
+                                        <input type="text" name="title" id="bespoke_title" required
+                                               class="w-full input-elegant rounded-lg px-4 py-3">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-muted mb-3">Subtitle</label>
+                                        <input type="text" name="subtitle" id="bespoke_subtitle"
+                                               class="w-full input-elegant rounded-lg px-4 py-3">
+                                    </div>
+                                    
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-muted mb-3">Description</label>
+                                        <textarea name="description" id="bespoke_description" required rows="3"
+                                                  class="w-full input-elegant rounded-lg px-4 py-3"></textarea>
+                                    </div>
+                                    
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-muted mb-3">Image</label>
+                                        <input type="file" name="image" id="bespoke_image"
+                                               class="w-full input-elegant rounded-lg px-4 py-3 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-amber-600 file:text-white hover:file:bg-amber-700 transition-colors"
+                                               accept="image/*">
+                                        <div id="bespoke_image_preview" class="mt-6"></div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-muted mb-3">Image Label</label>
+                                        <input type="text" name="image_label" id="bespoke_image_label" required
+                                               value="THE GOLDEN TIER"
+                                               class="w-full input-elegant rounded-lg px-4 py-3">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-muted mb-3">Order</label>
+                                        <input type="number" name="order" id="bespoke_order"
+                                               class="w-full input-elegant rounded-lg px-4 py-3" value="0">
+                                    </div>
+                                    
+                                    <!-- Features -->
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-muted mb-3">Features (3 items)</label>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <!-- Feature 1 -->
+                                            <div>
+                                                <label class="block text-xs text-muted mb-2">Feature 1 Value</label>
+                                                <input type="text" name="features[0][value]" id="bespoke_feature1_value" required
+                                                       class="w-full input-elegant rounded-lg px-4 py-2 text-sm">
+                                                <label class="block text-xs text-muted mb-2 mt-2">Feature 1 Label</label>
+                                                <input type="text" name="features[0][label]" id="bespoke_feature1_label" required
+                                                       class="w-full input-elegant rounded-lg px-4 py-2 text-sm">
+                                            </div>
+                                            
+                                            <!-- Feature 2 -->
+                                            <div>
+                                                <label class="block text-xs text-muted mb-2">Feature 2 Value</label>
+                                                <input type="text" name="features[1][value]" id="bespoke_feature2_value" required
+                                                       class="w-full input-elegant rounded-lg px-4 py-2 text-sm">
+                                                <label class="block text-xs text-muted mb-2 mt-2">Feature 2 Label</label>
+                                                <input type="text" name="features[1][label]" id="bespoke_feature2_label" required
+                                                       class="w-full input-elegant rounded-lg px-4 py-2 text-sm">
+                                            </div>
+                                            
+                                            <!-- Feature 3 -->
+                                            <div>
+                                                <label class="block text-xs text-muted mb-2">Feature 3 Value</label>
+                                                <input type="text" name="features[2][value]" id="bespoke_feature3_value" required
+                                                       class="w-full input-elegant rounded-lg px-4 py-2 text-sm">
+                                                <label class="block text-xs text-muted mb-2 mt-2">Feature 3 Label</label>
+                                                <input type="text" name="features[2][label]" id="bespoke_feature3_label" required
+                                                       class="w-full input-elegant rounded-lg px-4 py-2 text-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center">
+                                        <input type="checkbox" name="is_active" id="bespoke_is_active" value="1"
+                                               class="mr-2 rounded border-subtle bg-transparent">
+                                        <label for="bespoke_is_active" class="text-sm text-muted">Active</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end gap-3 mt-10">
+                                    <button type="button" onclick="hideBespokeForm()"
+                                            class="btn-outline-elegant px-6 py-2.5 rounded-lg text-sm font-medium">
+                                        Cancel
+                                    </button>
+                                    <button type="submit"
+                                            class="btn-premium px-6 py-2.5 rounded-lg text-sm font-medium">
+                                        Save Bespoke
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Bespoke List -->
+                    <div class="elegant-card rounded-xl overflow-hidden">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full elegant-table">
+                                <thead>
+                                    <tr>
+                                        <th class="px-8 py-5 text-left text-sm font-medium">Title</th>
+                                        <th class="px-8 py-5 text-left text-sm font-medium">Image</th>
+                                        <th class="px-8 py-5 text-left text-sm font-medium">Status</th>
+                                        <th class="px-8 py-5 text-left text-sm font-medium">Order</th>
+                                        <th class="px-8 py-5 text-left text-sm font-medium">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($bespokeSections as $bespoke)
+                                    <tr>
+                                        <td class="px-8 py-5">
+                                            <div class="font-medium">{{ $bespoke->title }}</div>
+                                            <div class="text-sm text-muted">{{ Str::limit($bespoke->subtitle, 30) }}</div>
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            @if($bespoke->image)
+                                                <div class="w-20 h-20 rounded-lg overflow-hidden border border-subtle">
+                                                    <img src="{{ asset('storage/' . $bespoke->image) }}" 
+                                                         alt="{{ $bespoke->title }}"
+                                                         class="w-full h-full object-cover">
+                                                </div>
+                                            @else
+                                                <div class="w-20 h-20 rounded-lg border border-subtle flex items-center justify-center">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            <span class="status-badge {{ $bespoke->is_active ? 'status-active' : 'status-inactive' }}">
+                                                <i class="fas fa-circle text-xs"></i>
+                                                {{ $bespoke->is_active ? 'Active' : 'Inactive' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            <div class="font-medium">{{ $bespoke->order }}</div>
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            <div class="flex items-center gap-2">
+                                                <button onclick="editBespoke({{ json_encode($bespoke) }})"
+                                                        class="btn-action edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <form action="{{ route('admin.bespoke-sections.destroy', $bespoke->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" onclick="return confirm('Delete this bespoke section?')"
+                                                            class="btn-action delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </main>
             
             <!-- Footer -->
@@ -821,9 +1040,15 @@
             if (section === 'products') {
                 document.getElementById('products-section').classList.remove('hidden');
                 document.getElementById('reviews-section').classList.add('hidden');
-            } else {
+                document.getElementById('bespoke-section').classList.add('hidden');
+            } else if (section === 'reviews') {
                 document.getElementById('products-section').classList.add('hidden');
                 document.getElementById('reviews-section').classList.remove('hidden');
+                document.getElementById('bespoke-section').classList.add('hidden');
+            } else if (section === 'bespoke') {
+                document.getElementById('products-section').classList.add('hidden');
+                document.getElementById('reviews-section').classList.add('hidden');
+                document.getElementById('bespoke-section').classList.remove('hidden');
             }
         }
         
@@ -832,6 +1057,7 @@
             const formContainer = document.getElementById('product-form-container');
             const formTitle = document.getElementById('product-form-title');
             const form = document.getElementById('product-form');
+            const formMethod = document.getElementById('product_form_method');
             const imagePreview = document.getElementById('product_image_preview');
             
             if (product) {
@@ -852,8 +1078,7 @@
                 }
                 
                 form.action = `/admin/products/${product.id}`;
-                form.method = 'PUT';
-                form.innerHTML += '@method("PUT")';
+                formMethod.value = 'PUT';
             } else {
                 formTitle.textContent = 'Add New Product';
                 document.getElementById('product_id').value = '';
@@ -864,9 +1089,7 @@
                 imagePreview.innerHTML = '';
                 
                 form.action = '{{ route("admin.products.store") }}';
-                form.method = 'POST';
-                const methodInput = form.querySelector('input[name="_method"]');
-                if (methodInput) methodInput.remove();
+                formMethod.value = 'POST';
             }
             
             formContainer.classList.remove('hidden');
@@ -886,6 +1109,7 @@
             const formContainer = document.getElementById('review-form-container');
             const formTitle = document.getElementById('review-form-title');
             const form = document.getElementById('review-form');
+            const formMethod = document.getElementById('review_form_method');
             
             if (review) {
                 formTitle.textContent = 'Edit Review';
@@ -895,8 +1119,7 @@
                 document.getElementById('review_text').value = review.review;
                 
                 form.action = `/admin/reviews/${review.id}`;
-                form.method = 'PUT';
-                form.innerHTML += '@method("PUT")';
+                formMethod.value = 'PUT';
             } else {
                 formTitle.textContent = 'Add New Review';
                 document.getElementById('review_id').value = '';
@@ -905,9 +1128,7 @@
                 document.getElementById('review_text').value = '';
                 
                 form.action = '{{ route("admin.reviews.store") }}';
-                form.method = 'POST';
-                const methodInput = form.querySelector('input[name="_method"]');
-                if (methodInput) methodInput.remove();
+                formMethod.value = 'POST';
             }
             
             formContainer.classList.remove('hidden');
@@ -920,6 +1141,86 @@
         
         function editReview(review) {
             showReviewForm(review);
+        }
+
+        // Bespoke Form Handling
+        function showBespokeForm(bespoke = null) {
+            const formContainer = document.getElementById('bespoke-form-container');
+            const formTitle = document.getElementById('bespoke-form-title');
+            const form = document.getElementById('bespoke-form');
+            const formMethod = document.getElementById('bespoke_form_method');
+            const imagePreview = document.getElementById('bespoke_image_preview');
+
+            if (bespoke) {
+                formTitle.textContent = 'Edit Bespoke';
+                document.getElementById('bespoke_id').value = bespoke.id;
+                document.getElementById('bespoke_title').value = bespoke.title;
+                document.getElementById('bespoke_subtitle').value = bespoke.subtitle || '';
+                document.getElementById('bespoke_description').value = bespoke.description;
+                document.getElementById('bespoke_image_label').value = bespoke.image_label;
+                document.getElementById('bespoke_order').value = bespoke.order;
+                document.getElementById('bespoke_is_active').checked = bespoke.is_active;
+
+                // Features
+                const features = bespoke.features || [];
+                if (features[0]) {
+                    document.getElementById('bespoke_feature1_value').value = features[0].value;
+                    document.getElementById('bespoke_feature1_label').value = features[0].label;
+                }
+                if (features[1]) {
+                    document.getElementById('bespoke_feature2_value').value = features[1].value;
+                    document.getElementById('bespoke_feature2_label').value = features[1].label;
+                }
+                if (features[2]) {
+                    document.getElementById('bespoke_feature3_value').value = features[2].value;
+                    document.getElementById('bespoke_feature3_label').value = features[2].label;
+                }
+
+                if (bespoke.image) {
+                    imagePreview.innerHTML = `
+                        <div class="relative w-40 h-40 rounded-lg overflow-hidden border border-subtle">
+                            <img src="{{ asset('storage') }}/${bespoke.image}" 
+                                 alt="Preview" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                    `;
+                }
+
+                form.action = `/admin/bespoke-sections/${bespoke.id}`;
+                formMethod.value = 'PUT';
+            } else {
+                formTitle.textContent = 'Add New Bespoke';
+                document.getElementById('bespoke_id').value = '';
+                document.getElementById('bespoke_title').value = '';
+                document.getElementById('bespoke_subtitle').value = '';
+                document.getElementById('bespoke_description').value = '';
+                document.getElementById('bespoke_image').value = '';
+                document.getElementById('bespoke_image_label').value = 'THE GOLDEN TIER';
+                document.getElementById('bespoke_order').value = 0;
+                document.getElementById('bespoke_is_active').checked = true;
+                // Reset features
+                document.getElementById('bespoke_feature1_value').value = '';
+                document.getElementById('bespoke_feature1_label').value = '';
+                document.getElementById('bespoke_feature2_value').value = '';
+                document.getElementById('bespoke_feature2_label').value = '';
+                document.getElementById('bespoke_feature3_value').value = '';
+                document.getElementById('bespoke_feature3_label').value = '';
+                imagePreview.innerHTML = '';
+
+                form.action = '{{ route("admin.bespoke-sections.store") }}';
+                formMethod.value = 'POST';
+            }
+
+            formContainer.classList.remove('hidden');
+            formContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideBespokeForm() {
+            document.getElementById('bespoke-form-container').classList.add('hidden');
+        }
+
+        function editBespoke(bespoke) {
+            showBespokeForm(bespoke);
         }
         
         // Drag and drop for featured products
@@ -965,17 +1266,26 @@
                     }
                 });
             }
-        });
-        
-        // Form submission handling
-        document.addEventListener('submit', function(e) {
-            if (e.target.id === 'product-form') {
-                const price = document.getElementById('product_price').value;
-                if (price < 0) {
-                    e.preventDefault();
-                    alert('Price cannot be negative');
-                    return false;
-                }
+
+            // Image preview for bespoke form
+            const bespokeImageInput = document.getElementById('bespoke_image');
+            if (bespokeImageInput) {
+                bespokeImageInput.addEventListener('change', function(e) {
+                    const preview = document.getElementById('bespoke_image_preview');
+                    preview.innerHTML = '';
+
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.className = 'w-40 h-40 object-cover rounded-lg border border-subtle';
+                            preview.appendChild(img);
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
             }
         });
         
@@ -985,21 +1295,10 @@
             
             const form = e.target;
             const formData = new FormData(form);
-            const productId = document.getElementById('product_id').value;
-            
-            let url, method;
-            if (productId) {
-                url = `/admin/products/${productId}`;
-                method = 'PUT';
-                formData.append('_method', 'PUT');
-            } else {
-                url = '{{ route("admin.products.store") }}';
-                method = 'POST';
-            }
             
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
+                const response = await fetch(form.action, {
+                    method: form.querySelector('input[name="_method"]').value === 'PUT' ? 'POST' : 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
@@ -1023,29 +1322,43 @@
             
             const form = e.target;
             const formData = new FormData(form);
-            const reviewId = document.getElementById('review_id').value;
-            
-            let url, method;
-            if (reviewId) {
-                url = `/admin/reviews/${reviewId}`;
-                method = 'PUT';
-                formData.append('_method', 'PUT');
-            } else {
-                url = '{{ route("admin.reviews.store") }}';
-                method = 'POST';
-            }
             
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
+                const response = await fetch(form.action, {
+                    method: form.querySelector('input[name="_method"]').value === 'PUT' ? 'POST' : 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify(Object.fromEntries(formData))
+                    body: formData
                 });
                 
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    const error = await response.json();
+                    alert(error.message || 'An error occurred');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Handle bespoke form submission
+        document.getElementById('bespoke-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.querySelector('input[name="_method"]').value === 'PUT' ? 'POST' : 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                });
+
                 if (response.ok) {
                     window.location.reload();
                 } else {

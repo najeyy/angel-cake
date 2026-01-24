@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\BespokeSection; // <-- Tambahkan ini
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -18,7 +19,8 @@ class DashboardController extends Controller
 
         $products = Product::orderBy('sort_order')->get();
         $reviews = Review::orderBy('created_at', 'desc')->get();
+        $bespokeSections = BespokeSection::orderBy('created_at', 'desc')->get(); // <-- Tambahkan ini
         
-        return view('admin.dashboard', compact('products', 'reviews'));
+        return view('admin.dashboard', compact('products', 'reviews', 'bespokeSections')); // <-- Tambahkan bespokeSections di compact
     }
 }
