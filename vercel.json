@@ -15,6 +15,6 @@
       "dest": "/api/index.php"
     }
   ],
-  "installCommand": "echo 'skipping install'",
-  "buildCommand": "echo 'skipping build'"
+  "installCommand": "echo 'skip install'",
+  "buildCommand": "echo 'skip build'"
 }
