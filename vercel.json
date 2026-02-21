@@ -14,8 +14,8 @@
         "APP_NAME": "Laravel",
         "APP_ENV": "production",
         "APP_KEY": "base64:9kFNpSz0Qn7o1C4QHx874gzbEIglG6TbmboKBXiQOWs=",
-        "APP_DEBUG": "false",
-        "APP_URL": "https://yourproductionurl.com",
+        "APP_DEBUG": "true",
+        "APP_URL": "https://angel-cake-omega.vercel.app",
 
         "APP_LOCALE": "en",
         "APP_FALLBACK_LOCALE": "en",
@@ -31,7 +31,7 @@
         "DB_PORT": "3306",
         "DB_DATABASE": "db2024_stormtorn",
         "DB_USERNAME": "db2024_stormtorn",
-        "DB_PASSWORD": "password_kamu",
+        "DB_PASSWORD": "GANTI_INI_PASSWORD_FILESS_IO",
 
         "ADMIN_USERNAME": "angeladmin",
         "ADMIN_PASSWORD": "cake123456",
